@@ -31,6 +31,10 @@ var (
 
 var driverLocationURL = os.Getenv("DRIVER_LOCATION_URL")
 
+var httpClient = &http.Client{
+	Timeout: 5 * time.Second,
+}
+
 func main() {
 	if driverLocationURL == "" {
 		driverLocationURL = "http://driver-location:8080"
@@ -49,7 +53,7 @@ func main() {
 }
 
 func findDriverHandler(w http.ResponseWriter, r *http.Request) {
-	resp, err := http.Get(driverLocationURL + "/available-drivers")
+	resp, err := httpClient.Get(driverLocationURL + "/available-drivers")
 	if err != nil {
 		http.Error(w, "Error connecting to Driver Location", http.StatusInternalServerError)
 		log.Printf("Error connecting to Driver Location: %v\n", err)
